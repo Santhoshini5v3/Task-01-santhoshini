@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TaskFlow — To-Do List</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background-color: #0e0f13;
+      color: #e8e4dc;
+      font-family: 'Roboto', sans-serif;
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    /* HEADER */
+    header {
+      background: #16181f;
+      border-bottom: 1px solid #2a2e40;
+      padding: 0 20px;
+    }
+    nav {
+      max-width: 620px;
+      margin: 0 auto;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo { font-family: 'Montserrat', sans-serif; font-size: 1.2rem; color: #c9a98a; }
+    .logo span { color: #a0d4e0; }
+    .badge { font-size: 0.72rem; background: #1e2130; color: #8a8fa8; border: 1px solid #2a2e40; padding: 3px 10px; border-radius: 20px; }
+
+    /* MAIN */
+    main { max-width: 620px; margin: 0 auto; width: 100%; padding: 30px 20px; }
+
+    /* HERO */
+    .hero { text-align: center; margin-bottom: 28px; }
+    .hero h1 { font-family: 'Montserrat', sans-serif; font-size: 2rem; color: #f2f0ea; }
+    .hero h1 span { color: #c9a98a; }
+    .hero p { color: #8a8fa8; font-size: 0.9rem; margin-top: 6px; }
+
+    /* STATS */
+    .stats { display: flex; gap: 12px; margin-bottom: 24px; }
+    .stat { flex: 1; background: #1e2130; border: 1px solid #2a2e40; border-radius: 12px; padding: 14px; text-align: center; }
+    .stat .num { display: block; font-family: 'Montserrat', sans-serif; font-size: 1.6rem; }
+    .stat .lbl { font-size: 0.7rem; color: #8a8fa8; text-transform: uppercase; letter-spacing: 0.06em; }
+    #s-total .num  { color: #a0d4e0; }
+    #s-active .num { color: #c9a98a; }
+    #s-done .num   { color: #70c9a0; }
+
+    /* ADD TASK */
+    .add-box { background: #1e2130; border: 1px solid #2a2e40; border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+    .add-box label { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #8a8fa8; margin-bottom: 12px; }
+    .input-row { display: flex; gap: 10px; }
+    .input-row input { flex: 1; padding: 10px 14px; background: #0e0f13; border: 1px solid #2a2e40; border-radius: 8px; color: #e8e4dc; font-size: 0.95rem; outline: none; }
+    .input-row input:focus { border-color: #a0d4e0; }
+    .btn-add { padding: 10px 20px; background: #a5856e; color: #fff; border: none; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+    .btn-add:hover { background: #c9a98a; }
+
+    /* FILTERS */
+    .filters { display: flex; gap: 8px; margin-bottom: 18px; padding-bottom: 10px; border-bottom: 1px solid #2a2e40; }
+    .filters button { padding: 5px 16px; border: 1px solid #2a2e40; border-radius: 20px; background: transparent; color: #8a8fa8; font-size: 0.82rem; cursor: pointer; }
+    .filters button.active { background: #a5856e; border-color: #a5856e; color: #fff; }
+    .filters button:hover:not(.active) { border-color: #a5856e; color: #c9a98a; }
+
+    /* TASK LIST */
+    ul { list-style: none; }
+    li { display: flex; align-items: center; gap: 12px; background: #1e2130; border: 1px solid #2a2e40; border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; }
+    li:hover { border-color: #a5856e; }
+    li.done .task-text { text-decoration: line-through; color: #5c6175; }
+
+    .check-btn { width: 22px; height: 22px; min-width: 22px; border-radius: 50%; border: 2px solid #2a2e40; background: transparent; cursor: pointer; color: transparent; font-size: 0.8rem; }
+    li.done .check-btn { background: #70c9a0; border-color: #70c9a0; color: #fff; }
+
+    .task-text { flex: 1; font-size: 0.95rem; }
+    .del-btn { background: none; border: none; color: #8a8fa8; font-size: 1.1rem; cursor: pointer; }
+    .del-btn:hover { color: #e07070; }
+
+    .empty { text-align: center; color: #555; padding: 30px 0; display: none; }
+
+    /* CLEAR */
+    .clear-row { text-align: right; margin-top: 14px; }
+    .btn-clear { background: none; border: 1px solid #2a2e40; color: #8a8fa8; border-radius: 6px; font-size: 0.8rem; padding: 5px 14px; cursor: pointer; }
+    .btn-clear:hover { border-color: #e07070; color: #e07070; }
+
+    /* FOOTER */
+    footer { background: #16181f; border-top: 1px solid #2a2e40; text-align: center; padding: 14px; font-size: 0.75rem; color: #8a8fa8; }
+    footer span { color: #c9a98a; }
+
+    @media (max-width: 480px) {
+      .hero h1 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <nav>
+      <div class="logo">✦ Task<span>Flow</span></div>
+      <span class="badge">DecodeLabs · Project 1</span>
+    </nav>
+  </header>
+
+  <main>
+    <div class="hero">
+      <h1>Your <span>To-Do</span> List</h1>
+      <p>Plan your day. Track your progress. Ship your work.</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat" id="s-total">  <span class="num" id="c-total">0</span>  <span class="lbl">Total</span>  </div>
+      <div class="stat" id="s-active"> <span class="num" id="c-active">0</span> <span class="lbl">Active</span> </div>
+      <div class="stat" id="s-done">   <span class="num" id="c-done">0</span>   <span class="lbl">Done</span>   </div>
+    </div>
+
+    <div class="add-box">
+      <label>Add New Task</label>
+      <div class="input-row">
+        <input type="text" id="taskInput" placeholder="What needs to be done?" />
+        <button class="btn-add" onclick="addTask()">+ Add</button>
+      </div>
+    </div>
+
+    <div class="filters">
+      <button class="active" onclick="setFilter('all', this)">All</button>
+      <button onclick="setFilter('active', this)">Active</button>
+      <button onclick="setFilter('done', this)">Completed</button>
+    </div>
+
+    <ul id="taskList"></ul>
+    <p class="empty" id="emptyMsg">No tasks here. Add one above!</p>
+
+    <div class="clear-row">
+      <button class="btn-clear" onclick="clearDone()">Clear Completed</button>
+    </div>
+  </main>
+
+  <footer>
+    <p>Built with <span>HTML · CSS · JS</span> &nbsp;·&nbsp; DecodeLabs Full Stack Internship 2026</p>
+  </footer>
+
+  <script>
+    var tasks = [];
+    var currentFilter = "all";
+
+    function addTask() {
+      var input = document.getElementById("taskInput");
+      var text = input.value.trim();
+      if (text === "") return;
+      tasks.unshift({ text: text, done: false });
+      input.value = "";
+      renderTasks();
+    }
+
+    function toggleTask(i) {
+      tasks[i].done = !tasks[i].done;
+      renderTasks();
+    }
+
+    function deleteTask(i) {
+      tasks.splice(i, 1);
+      renderTasks();
+    }
+
+    function clearDone() {
+      tasks = tasks.filter(function(t) { return !t.done; });
+      renderTasks();
+    }
+
+    function setFilter(filter, btn) {
+      currentFilter = filter;
+      document.querySelectorAll(".filters button").forEach(function(b) { b.classList.remove("active"); });
+      btn.classList.add("active");
+      renderTasks();
+    }
+
+    function renderTasks() {
+      var list = document.getElementById("taskList");
+      var filtered = currentFilter === "active" ? tasks.filter(function(t) { return !t.done; })
+                   : currentFilter === "done"   ? tasks.filter(function(t) { return t.done; })
+                   : tasks;
+
+      list.innerHTML = "";
+      document.getElementById("emptyMsg").style.display = filtered.length === 0 ? "block" : "none";
+
+      for (var i = 0; i < filtered.length; i++) {
+        var task = filtered[i];
+        var realIndex = tasks.indexOf(task);
+        var li = document.createElement("li");
+        if (task.done) li.className = "done";
+        li.innerHTML =
+          '<button class="check-btn" onclick="toggleTask(' + realIndex + ')">✓</button>' +
+          '<div class="task-text">' + task.text + '</div>' +
+          '<button class="del-btn" onclick="deleteTask(' + realIndex + ')">✕</button>';
+        list.appendChild(li);
+      }
+
+      document.getElementById("c-total").textContent  = tasks.length;
+      document.getElementById("c-active").textContent = tasks.filter(function(t) { return !t.done; }).length;
+      document.getElementById("c-done").textContent   = tasks.filter(function(t) { return t.done; }).length;
+    }
+
+    document.getElementById("taskInput").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") addTask();
+    });
+  </script>
+
+</body>
+</html>
