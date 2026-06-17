@@ -22,19 +22,19 @@ A simple and responsive To Do List application built using HTML, CSS, and JavaSc
 
 ### Screenshot 1
 
-![Screenshot 1](screenshots/task.png)
+![Screenshot 1](screenshots/01-task.png)
 
 ### Screenshot 2
 
-![Screenshot 2](screenshots/active.png)
+![Screenshot 2](screenshots/02-active.png)
 
 ### Screenshot 3
 
-![Screenshot 3](screenshots/progress.png)
+![Screenshot 3](screenshots/03-progress.png)
 
 ### Screenshot 4
 
-![Screenshot 4](screenshots/task complete.png)
+![Screenshot 4](screenshots/04-task complete.png)
 
 ## Author
 
